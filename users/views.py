@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,HttpResponse
 from django.contrib.auth import login, authenticate,logout
-from users.forms import RegistrationForm
+from users.forms import RegistrationForm,LoginForm
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
@@ -35,10 +35,7 @@ def registration_view(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            email = form.cleaned_data.get('email')
-            raw_password = form.cleaned_data.get("password1")
-            account = authenticate(email=email,password=raw_password)
-            login(request,account)
+           
             return redirect('home')
         else:
             context['Registration_form']= form
@@ -57,7 +54,27 @@ class LoginAPI(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
+#login view===========================================
+def login_view(request):
+    context = {}
+    user = request.user
+    if user.is_authenticated:
+        return redirect("home")
+    if request.POST:
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username,password=password)
+            if user:
+                login(request,user)
+                return redirect("home")
+    else:
+        form = LoginForm()
+    context['login_form'] = form
+    return render(request,'users/login.html',context)
 
+        
 
 
 def Logout_view(request):

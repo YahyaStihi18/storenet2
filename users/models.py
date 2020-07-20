@@ -46,6 +46,16 @@ class Account(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
+    first_name = models.CharField(max_length=60,null=True)
+    last_name = models.CharField(max_length=60,null=True)
+    wilaya = models.CharField(max_length=60,null=True)
+    city = models.CharField(max_length=60,null=True)
+    address = models.CharField(max_length=200,null=True)
+    store_coordinates = models.CharField(max_length=60,null=True)
+    documents1 = models.CharField(max_length=60,null=True)
+    documents2 = models.CharField(max_length=60,null=True)
+
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email','phone']
     
@@ -59,3 +69,4 @@ class Account(AbstractBaseUser):
         return self.is_admin
     def has_module_perms(self, app_label):
         return True
+
