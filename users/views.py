@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect,HttpResponse
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate,logout
 from users.forms import RegistrationForm
 
 from rest_framework import generics, permissions
@@ -57,6 +57,12 @@ class LoginAPI(KnoxLoginView):
         user = serializer.validated_data['user']
         login(request, user)
         return super(LoginAPI, self).post(request, format=None)
+
+
+
+def Logout_view(request):
+    logout(request)
+    return redirect('home')
 
             
             

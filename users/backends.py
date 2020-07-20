@@ -14,6 +14,13 @@ class AccountAuthBackend(object):
                 return None
         except:pass
         try:
+            user = Account.objects.get(username=username)
+            if user.check_password(password):
+                return user
+            else:
+                return None
+        except:pass
+        try:
             user = Account.objects.get(phone=username)
             if user.check_password(password):
                 return user
