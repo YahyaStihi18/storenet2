@@ -39,22 +39,13 @@ class Account(AbstractBaseUser):
     email = models.EmailField(verbose_name="email",max_length=60, unique=True)
     username = models.CharField(max_length=60,unique=True)
     phone = models.CharField(max_length=60,unique=True)
+
     date_joined = models.DateTimeField(verbose_name="date joined",auto_now_add=True)
     last_login = models.DateTimeField(verbose_name="last login",auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-
-    first_name = models.CharField(max_length=60,null=True)
-    last_name = models.CharField(max_length=60,null=True)
-    wilaya = models.CharField(max_length=60,null=True)
-    city = models.CharField(max_length=60,null=True)
-    address = models.CharField(max_length=200,null=True)
-    store_coordinates = models.CharField(max_length=60,null=True)
-    documents1 = models.CharField(max_length=60,null=True)
-    documents2 = models.CharField(max_length=60,null=True)
-
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email','phone']
@@ -69,4 +60,22 @@ class Account(AbstractBaseUser):
         return self.is_admin
     def has_module_perms(self, app_label):
         return True
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(Account,on_delete=models.CASCADE,null=True, blank=True)
+    first_name = models.CharField(max_length=60,blank=False)
+    last_name = models.CharField(max_length=60,blank=False)
+    wilaya = models.CharField(max_length=60,blank=False)
+    city = models.CharField(max_length=60,blank=False)
+    address = models.CharField(max_length=200,blank=False)
+    store_coordinates = models.CharField(max_length=60,blank=False)
+    documents1 = models.CharField(max_length=60,blank=False)
+    documents2 = models.CharField(max_length=60,blank=False)
+
+    def __str__(self):
+        return self.first_name
+        
+    
+    
 

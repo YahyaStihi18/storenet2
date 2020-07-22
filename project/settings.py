@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
- 
+  
 ]
 
 REST_FRAMEWORK = {
@@ -53,12 +53,14 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+#USER_DETAILS_SERIALIZER = 'users.serializers.ProfileSerializer' 
 DJOSER = {
  
+    'USER_CREATE_PASSWORD_RETYPE': True,
     'SERIALIZERS': {
-         'user_create': 'users.serializers.RegisterSerializer'
-    }
-
+         'user_create': 'users.serializers.AccountCreateSerializer',
+         #'user':'users.serializers.AccountCreateSerializer'
+    },
 }
 
 MIDDLEWARE = [

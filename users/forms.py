@@ -8,7 +8,7 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = Account
-        fields = ("email","username","phone","password1","password2",'first_name','last_name','wilaya','city','address','store_coordinates','documents1','documents2')
+        fields = ('email','username','phone','password1','password2')
 
 
 class LoginForm(forms.ModelForm):

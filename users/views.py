@@ -1,23 +1,22 @@
-from django.shortcuts import render,redirect,HttpResponse
+from django.shortcuts import render,redirect,HttpResponse,reverse,get_object_or_404
 from django.contrib.auth import login, authenticate,logout
 from users.forms import RegistrationForm,LoginForm
-
-from rest_framework import generics, permissions
+from rest_framework.decorators import api_view,permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .serializers import UserSerializer, RegisterSerializer
-from django.contrib.auth import login
-from rest_framework import permissions
-from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.views import APIView
+from rest_framework import status
+from datetime import datetime
+from .serializers import ProfileSerializer,UserSerializer,AccountSerializer
+from .models import Account
+
+
 
 def home(request):
     return HttpResponse("tihs is the home page")
 
 
 #home api================================================
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from datetime import datetime
 
 @api_view(['GET'])
 def server(request):
@@ -25,7 +24,25 @@ def server(request):
     message = 'server is live,current time is'
     return Response(data=message+date, status=status.HTTP_200_OK)
 
+#profile api===============================
 
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+
+def profile(request):
+    #current_user = request.user
+    user = request.user 
+    if request.method == 'GET':
+        account = Account.objects.filter(username=user)
+        serializer = AccountSerializer(account, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = ProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user = request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Register view============================================
 def registration_view(request):
