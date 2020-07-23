@@ -6,6 +6,8 @@ urlpatterns = [
     path('api/',include('djoser.urls')),
     path('api/',include('djoser.urls.authtoken')),
 
+    path('api/register/', views.register, name='register'),
+    path('activate/<uidb64>/<token>/',views.activate,name='activate'),
     path('api/server/',views.server,name='server'),
     path('api/profile/',views.profile,name='profile'),
     
