@@ -43,7 +43,6 @@ def server(request):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-
 def profile(request):
     #current_user = request.user
     user = request.user 
@@ -93,16 +92,39 @@ def register(request):
             data = serializer.errors
         return Response(data)  
 
+#reaquest email confirmation link====================
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def confirmation_api(request):
+    user_id = Token.objects.get(key=request.auth.key).user_id
+    user = Account.objects.get(id=user_id)
 
-            #return Response(serializer.data, status=status.HTTP_201_CREATED)
-        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    current_site = get_current_site(request)
+    mail_subject = 'Activate your account.'
+    to_email = user.email
 
-#active view==========================================
-def activate(request, uidb64, token):
+    context = {
+                'user': user,
+                'domain': current_site.domain,
+                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+                'token':account_activation_token.make_token(user),
+            }
+
+    with open( settings.BASE_DIR + "/users/templates/users/acc_active_email.txt" ) as f:
+                text = f.read()
+    message = EmailMultiAlternatives(subject=mail_subject,body=text,to=[to_email])
+    html_template=get_template('users/acc_active_email.html').render(context)
+    message.attach_alternative(html_template,"text/html")
+    message.send()
+    return HttpResponse("email sent")
+
+#active api==========================================
+def activate_api(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
-        user = Account.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, Account.DoesNotExist ):
+        account = Token.objects.get(token=token).key
+        user = Account.objects.get(user=account)
+    except(TypeError, ValueError, OverflowError, user.DoesNotExist ):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         user.email_confirmed = True

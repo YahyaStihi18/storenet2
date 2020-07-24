@@ -8,9 +8,8 @@ urlpatterns = [
     path('api/login/', obtain_auth_token,name='login'),
     path('api/server/',views.server,name='server'),
     path('api/profile/',views.profile,name='profile'),
-
-
-    path('activate/<uidb64>/<token>/',views.activate,name='activate'),
+    path('api/confirmation/',views.confirmation_api,name='confirmation'),
+    path('api/activate/<uidb64>/<token>/',views.activate_api,name='activate'),
 
     
     path('home/',views.home, name='home'),
