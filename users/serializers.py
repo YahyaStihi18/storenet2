@@ -20,3 +20,6 @@ class AccountSerializer(serializers.ModelSerializer):
         model = Account
         fields = ('id', 'username', 'email','phone')
 
+
+
+

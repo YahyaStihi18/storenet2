@@ -1,15 +1,17 @@
 from . import views
 from django.urls import path,include
-from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
-    path('api/',include('djoser.urls')),
-    path('api/',include('djoser.urls.authtoken')),
 
     path('api/register/', views.register, name='register'),
-    path('activate/<uidb64>/<token>/',views.activate,name='activate'),
+    path('api/login/', obtain_auth_token,name='login'),
     path('api/server/',views.server,name='server'),
     path('api/profile/',views.profile,name='profile'),
+
+
+    path('activate/<uidb64>/<token>/',views.activate,name='activate'),
+
     
     path('home/',views.home, name='home'),
     path('register/', views.registration_view,name='register'),

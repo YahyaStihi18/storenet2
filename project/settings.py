@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'rest_framework.authtoken',
-    'djoser',
   
 ]
 
@@ -48,20 +47,14 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+
     ),
     'DEFAULT_PERMISSIONS_CLASSES':(
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
-#USER_DETAILS_SERIALIZER = 'users.serializers.ProfileSerializer' 
-DJOSER = {
- 
-    'USER_CREATE_PASSWORD_RETYPE': True,
-    'SERIALIZERS': {
-         'user_create': 'users.serializers.AccountCreateSerializer',
-         #'user':'users.serializers.AccountCreateSerializer'
-    },
-}
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,7 +89,6 @@ AUTH_USER_MODEL = "users.Account"
 AUTHENTICATION_BACKENDS = {
     "django.contrib.auth.backends.ModelBackend",
     "users.backends.AccountAuthBackend",
-
 }
 
 

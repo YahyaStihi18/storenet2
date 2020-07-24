@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from datetime import datetime
 from .serializers import ProfileSerializer,UserSerializer,AccountSerializer,AccountCreateSerializer
 from .models import Account
@@ -78,33 +79,23 @@ def registration_view(request):
 def register(request):
     if request.method == 'POST':
         serializer = AccountCreateSerializer(data=request.data)
+        data = {}
         if serializer.is_valid():
-            serializer.save()
+            account= serializer.save()
+            data['response']="successfully registered a new user."
+            data['email'] = account.email 
+            data['username'] = account.username 
+            data['phone'] = account.phone
+            token = Token.objects.get(user=account).key
+            data['token'] = token
+
+        else:
+            data = serializer.errors
+        return Response(data)  
+
+
             #return Response(serializer.data, status=status.HTTP_201_CREATED)
         #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-            current_site = get_current_site(request)
-            mail_subject = 'Activate your account.'
-            to_email = serializer.validated_data.get('email')
-            user = request.user
-            print(to_email)
-            context = {
-                'user': user,
-                'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                'token':account_activation_token.make_token(user),
-            }
-            print('context done')
-
-            with open( settings.BASE_DIR + "/users/templates/users/acc_active_email.txt" ) as f:
-                text = f.read()
-            message = EmailMultiAlternatives(subject=mail_subject,body=text,to=[to_email])
-            html_template=get_template('users/acc_active_email.html').render(context)
-            message.attach_alternative(html_template,"text/html")
-            message.send()
-            return HttpResponse("email sent")
-        else:
-            redirect('register')
 
 #active view==========================================
 def activate(request, uidb64, token):
@@ -148,6 +139,9 @@ def login_view(request):
 def Logout_view(request):
     logout(request)
     return redirect('home')
+
+
+
 
             
             
