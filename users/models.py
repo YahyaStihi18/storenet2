@@ -43,7 +43,7 @@ class MyAccountManager(BaseUserManager):
 
 
 class Account(AbstractBaseUser):
-    email = models.EmailField(verbose_name="email",max_length=60, unique=True)
+    email = models.EmailField(verbose_name="email",max_length=60, unique=True,)
     username = models.CharField(max_length=60,unique=True)
     phone = models.CharField(max_length=60,unique=True)
 

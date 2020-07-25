@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from datetime import datetime
-from .serializers import ProfileSerializer,UserSerializer,AccountSerializer,AccountCreateSerializer
+from .serializers import ProfileSerializer,AccountSerializer,AccountCreateSerializer
 from .models import Account
 from django.contrib import messages
 
@@ -89,8 +89,21 @@ def register(request):
             data['token'] = token
 
         else:
-            data = serializer.errors
-        return Response(data)  
+            data = {}
+            username = request.data['username']
+            email = request.data['email']
+            phone = request.data['phone']
+
+            if Account.objects.filter(username=username).exists():
+                data['username']="اسم المستخدم مستعمل"
+            if Account.objects.filter(email=email).exists():
+                data['email']="الايميل مسخدم"
+            if Account.objects.filter(phone=phone).exists():
+                data['phone']="رقم الهاتف مستخدم"
+
+                return Response(data,status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data) 
 
 #reaquest email confirmation link====================
 @api_view(['GET', 'POST'])
@@ -107,7 +120,7 @@ def confirmation_api(request):
                 'user': user,
                 'domain': current_site.domain,
                 'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                'token':account_activation_token.make_token(user),
+                'token':Token.objects.get(user=user).key,
             }
 
     with open( settings.BASE_DIR + "/users/templates/users/acc_active_email.txt" ) as f:
@@ -118,7 +131,7 @@ def confirmation_api(request):
     message.send()
     return HttpResponse("email sent")
 
-#active api==========================================
+#activate api==========================================
 def activate_api(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
