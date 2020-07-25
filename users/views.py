@@ -132,7 +132,7 @@ def confirmation_api(request):
     html_template=get_template('users/acc_active_email.html').render(context)
     message.attach_alternative(html_template,"text/html")
     message.send()
-    return HttpResponse("email sent")
+    return Response("email sent")
 
 #activate api==========================================
 def activate_api(request, uidb64, token):
@@ -145,9 +145,9 @@ def activate_api(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.email_confirmed = True
         user.save()
-        return HttpResponse('email confirmed')
+        return Response('email confirmed')
     else:
-        return HttpResponse('Activation link is expired or invalid!')
+        return Response('Activation link is expired or invalid!')
 
 
 
