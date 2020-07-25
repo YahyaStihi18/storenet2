@@ -96,13 +96,12 @@ def register(request):
             phone = request.data['phone']
 
             if Account.objects.filter(username=username).exists():
-                data['username']=" اسم المستخدم غير متاح"
+                data['username']="اسم المستخدم غير متاح"
             if Account.objects.filter(email=email).exists():
-                data['email']=" البريد الالكتروني غير متاح"
+                data['email']="البريد الالكتروني غير متاح"
             if Account.objects.filter(phone=phone).exists():
-                data['phone']=" رقم الهاتف غير متاح"
-            else:
-                data = serializer.errors
+                data['phone']="رقم الهاتف غير متاح"
+
 
             return Response(data,status=status.HTTP_400_BAD_REQUEST)
 
