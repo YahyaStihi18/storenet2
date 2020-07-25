@@ -87,6 +87,7 @@ def register(request):
             data['phone'] = account.phone
             token = Token.objects.get(user=account).key
             data['token'] = token
+            return Response(data)
 
         else:
             data = {}
@@ -97,13 +98,16 @@ def register(request):
             if Account.objects.filter(username=username).exists():
                 data['username']="اسم المستخدم مستعمل"
             if Account.objects.filter(email=email).exists():
-                data['email']="الايميل مسخدم"
+                data['email']="الايمايل مستعمل"
             if Account.objects.filter(phone=phone).exists():
-                data['phone']="رقم الهاتف مستخدم"
+                data['phone']="رقم الهاتف مستعمل"
+            else:
+                data = serializer.errors
 
-                return Response(data,status=status.HTTP_400_BAD_REQUEST)
+            return Response(data,status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(data) 
+
+         
 
 #reaquest email confirmation link====================
 @api_view(['GET', 'POST'])
