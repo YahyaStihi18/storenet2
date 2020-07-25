@@ -96,11 +96,11 @@ def register(request):
             phone = request.data['phone']
 
             if Account.objects.filter(username=username).exists():
-                data['username']="اسم المستخدم مستعمل"
+                data['username']=" اسم المستخدم غير متاح"
             if Account.objects.filter(email=email).exists():
-                data['email']="الايمايل مستعمل"
+                data['email']=" البريد الالكتروني غير متاح"
             if Account.objects.filter(phone=phone).exists():
-                data['phone']="رقم الهاتف مستعمل"
+                data['phone']=" رقم الهاتف غير متاح"
             else:
                 data = serializer.errors
 
