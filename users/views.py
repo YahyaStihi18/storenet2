@@ -137,18 +137,16 @@ def confirmation_api(request):
 #activate api==========================================
 def activate_api(request, uidb64, token):
     try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        account = Token.objects.get(token=token).key
-        user = Account.objects.get(user=account)
-    except(TypeError, ValueError, OverflowError, user.DoesNotExist ):
+        user_id = Token.objects.get(key=token).user_id
+        user = Account.objects.get(id=user_id)
+    except (TypeError, ValueError, OverflowError, user.DoesNotExist ):
         user = None
-    if user is not None and account_activation_token.check_token(user, token):
+    if user is not None and user.email_confirmed is False :
         user.email_confirmed = True
         user.save()
-        return Response('email confirmed')
+        return HttpResponse('email confirmed')
     else:
-        return Response('Activation link is expired or invalid!')
-
+        return HttpResponse('Activation link is expired or invalid!')
 
 
 #login view===========================================
